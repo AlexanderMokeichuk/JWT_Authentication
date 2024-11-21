@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { createAccessToken, createRefreshToken } from '../config';
-import { LoginUserDTO, RegisterUserDTO } from '../dto';
+import { UserLoginDTO, UserRegisterDTO } from '../dto';
 
 const prisma = new PrismaClient();
 
-export const registerUser = async (dto: RegisterUserDTO) => {
+export const registerUser = async (dto: UserRegisterDTO) => {
   const existingUser = await prisma.user.findUnique({
     where: { email: dto.email },
   });
@@ -29,7 +29,7 @@ export const registerUser = async (dto: RegisterUserDTO) => {
   return { accessToken, refreshToken, newUser };
 };
 
-export const loginUser = async (dto: LoginUserDTO) => {
+export const loginUser = async (dto: UserLoginDTO) => {
   const user = await prisma.user.findUnique({
     where: { email: dto.email },
   });

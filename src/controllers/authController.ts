@@ -1,10 +1,11 @@
 import { Request, Response, RequestHandler } from 'express';
 import { validate } from 'class-validator';
-import { LoginUserDTO, RegisterUserDTO } from '../dto';
+import { UserLoginDTO, UserRegisterDTO, UserResponseDTO } from '../dto';
 import { loginUser, registerUser } from '../services';
+import { plainToInstance } from 'class-transformer';
 
 export const register: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-  const registerUserDTO = new RegisterUserDTO();
+  const registerUserDTO = new UserRegisterDTO();
   registerUserDTO.email = req.body.email;
   registerUserDTO.password = req.body.password;
 
@@ -16,14 +17,16 @@ export const register: RequestHandler = async (req: Request, res: Response): Pro
   try {
     const { accessToken, refreshToken, newUser } = await registerUser(registerUserDTO);
 
+    const userResponseDTO = plainToInstance(UserResponseDTO, newUser);
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       maxAge: 15 * 24 * 60 * 60 * 1000,
     });
 
-    return void res.status(201).json({
+    return void res.send({
       accessToken: accessToken,
-      user: newUser,
+      user: userResponseDTO,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -34,7 +37,7 @@ export const register: RequestHandler = async (req: Request, res: Response): Pro
 };
 
 export const login: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-  const loginUserDTO = new LoginUserDTO();
+  const loginUserDTO = new UserLoginDTO();
   loginUserDTO.email = req.body.email;
   loginUserDTO.password = req.body.password;
 
@@ -46,14 +49,16 @@ export const login: RequestHandler = async (req: Request, res: Response): Promis
   try {
     const { accessToken, refreshToken, user } = await loginUser(loginUserDTO);
 
+    const userResponseDTO = plainToInstance(UserResponseDTO, user);
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       maxAge: 15 * 24 * 60 * 60 * 1000,
     });
 
-    return void res.status(200).json({
-      accessToken,
-      user,
+    return void res.send({
+      accessToken: accessToken,
+      user: userResponseDTO,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
