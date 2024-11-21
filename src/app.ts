@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors';
-import authRoutes from './routes/authRoutes';
 import cookieParser from 'cookie-parser';
+import authRoutes from './routes/authRoutes';
 
 const app = express();
 const localhost = `http://localhost:${process.env.PORT || 8000}`;
