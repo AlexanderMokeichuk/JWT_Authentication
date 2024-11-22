@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { createAccessToken, createRefreshToken } from '../config';
 import { UserLoginDTO, UserRegisterDTO } from '../dto';
+import { createAccessToken, createRefreshToken } from '../utils';
 
 const prisma = new PrismaClient();
 
