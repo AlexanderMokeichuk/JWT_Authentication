@@ -11,6 +11,9 @@ export class UserResponseDTO {
   name: string;
 
   @Expose()
+  role: string;
+
+  @Expose()
   createdAt: Date;
 
   @Expose()
@@ -23,6 +26,7 @@ export class UserResponseDTO {
     id: number,
     email: string,
     name: string,
+    role: string,
     createdAt: Date,
     updatedAt: Date,
     password: string,
@@ -30,6 +34,7 @@ export class UserResponseDTO {
     this.id = id;
     this.email = email;
     this.name = name;
+    this.role = role;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.password = password;

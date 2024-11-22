@@ -8,29 +8,24 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  balance   Int      @default(100)
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  hashedRT String?
-  hashedAT String?
-
-  usageHistory UsageHistory[]
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  password     String
+  balance      Int            @default(100)
+  role         Role           @default(USER)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   transactions Transaction[]
+  usageHistory UsageHistory[]
 }
 
 model Model {
-  id            Int      @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   name          String
   pricePerToken Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  usageHistory UsageHistory[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  usageHistory  UsageHistory[]
 }
 
 model Transaction {
@@ -39,8 +34,7 @@ model Transaction {
   amount    Int
   type      TransactionType
   createdAt DateTime        @default(now())
-
-  user User @relation(fields: [userId], references: [id])
+  user      User            @relation(fields: [userId], references: [id])
 }
 
 model UsageHistory {
@@ -49,9 +43,8 @@ model UsageHistory {
   modelId    Int
   tokensUsed Int
   createdAt  DateTime @default(now())
-
-  user  User  @relation(fields: [userId], references: [id])
-  model Model @relation(fields: [modelId], references: [id])
+  model      Model    @relation(fields: [modelId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 enum TransactionType {

@@ -1,8 +1,9 @@
-import { Request, Response, RequestHandler } from 'express';
+import { Request, RequestHandler, Response } from 'express';
 import { validate } from 'class-validator';
 import { UserLoginDTO, UserRegisterDTO, UserResponseDTO } from '../dto';
-import { loginUser, registerUser } from '../services';
+import { loginUser, refreshTokensUser, registerUser } from '../services';
 import { plainToInstance } from 'class-transformer';
+import { IRequestWithUser } from '../types';
 
 export const register: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const registerUserDTO = new UserRegisterDTO();
@@ -66,4 +67,26 @@ export const login: RequestHandler = async (req: Request, res: Response): Promis
     }
     return void res.status(400).json({ error: 'Unknown error occurred' });
   }
+};
+
+export const refreshTokenController = async (
+  req: IRequestWithUser,
+  res: Response,
+): Promise<void> => {
+  const user = req.user;
+
+  if (!user) {
+    return void res.status(401).send({ error: 'User not authenticated' });
+  }
+
+  const { accessToken, refreshToken } = await refreshTokensUser(user);
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    maxAge: 15 * 24 * 60 * 60 * 1000,
+  });
+
+  return void res.send({
+    accessToken: accessToken,
+  });
 };

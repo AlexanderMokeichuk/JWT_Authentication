@@ -1,9 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { UserLoginDTO, UserRegisterDTO } from '../dto';
 import { createAccessToken, createRefreshToken } from '../utils';
 
 const prisma = new PrismaClient();
+const saltFactor = Number(process.env.SALT_WORK_FACTOR) || 10;
 
 export const registerUser = async (dto: UserRegisterDTO) => {
   const existingUser = await prisma.user.findUnique({
@@ -14,7 +15,7 @@ export const registerUser = async (dto: UserRegisterDTO) => {
     throw new Error('User already exists');
   }
 
-  const hashedPassword = await bcrypt.hash(dto.password, 10);
+  const hashedPassword = await bcrypt.hash(dto.password, saltFactor);
 
   const newUser = await prisma.user.create({
     data: {
@@ -23,8 +24,8 @@ export const registerUser = async (dto: UserRegisterDTO) => {
     },
   });
 
-  const accessToken = createAccessToken(newUser.id);
-  const refreshToken = createRefreshToken(newUser.id);
+  const accessToken = createAccessToken(newUser.email);
+  const refreshToken = createRefreshToken(newUser.email);
 
   return { accessToken, refreshToken, newUser };
 };
@@ -44,8 +45,15 @@ export const loginUser = async (dto: UserLoginDTO) => {
     throw new Error('Invalid credentials');
   }
 
-  const accessToken = createAccessToken(user.id);
-  const refreshToken = createRefreshToken(user.id);
+  const accessToken = createAccessToken(user.email);
+  const refreshToken = createRefreshToken(user.email);
 
   return { accessToken, refreshToken, user };
+};
+
+export const refreshTokensUser = async (user: User) => {
+  const accessToken = createAccessToken(user.email);
+  const refreshToken = createRefreshToken(user.email);
+
+  return { accessToken, refreshToken };
 };

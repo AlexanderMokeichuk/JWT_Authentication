@@ -8,7 +8,8 @@
     "build": "tsc",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "generate-swagger": "swagger-jsdoc -d swagger.config.js -o swagger.json"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "reflect-metadata": "^0.2.2",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"
   },
@@ -37,6 +39,8 @@
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.9.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
     "eslint": "^9.15.0",
     "nodemon": "^3.1.7",
     "prettier": "3.3.3",
