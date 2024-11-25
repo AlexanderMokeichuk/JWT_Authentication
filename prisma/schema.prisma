@@ -8,48 +8,13 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  email        String         @unique
-  password     String
-  balance      Int            @default(100)
-  role         Role           @default(USER)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  transactions Transaction[]
-  usageHistory UsageHistory[]
-}
-
-model Model {
-  id            Int            @id @default(autoincrement())
-  name          String
-  pricePerToken Int
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  usageHistory  UsageHistory[]
-}
-
-model Transaction {
-  id        Int             @id @default(autoincrement())
-  userId    Int
-  amount    Int
-  type      TransactionType
-  createdAt DateTime        @default(now())
-  user      User            @relation(fields: [userId], references: [id])
-}
-
-model UsageHistory {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  modelId    Int
-  tokensUsed Int
-  createdAt  DateTime @default(now())
-  model      Model    @relation(fields: [modelId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-}
-
-enum TransactionType {
-  DEPOSIT
-  WITHDRAW
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  balance   Int      @default(100)
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {

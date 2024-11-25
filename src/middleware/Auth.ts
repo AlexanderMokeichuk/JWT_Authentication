@@ -3,11 +3,11 @@ import { IDecodedJwt, IRequestWithUser } from '../types';
 import prisma from '../config/database';
 import jwt from 'jsonwebtoken';
 
-const Auth = async (req: IRequestWithUser, res: Response, next: NextFunction) => {
+const Auth = async (req: IRequestWithUser, res: Response, next: NextFunction): Promise<void> => {
   const tokenData = req.get('Authorization');
 
   if (!tokenData) {
-    return res.status(401).send({ error: 'No token provided' });
+    return void res.status(401).send({ error: 'No token provided' });
   }
 
   const [, token] = tokenData.split(' ');
@@ -17,7 +17,7 @@ const Auth = async (req: IRequestWithUser, res: Response, next: NextFunction) =>
     decoded = jwt.verify(token, `${process.env.JWT_ACCESS}`) as IDecodedJwt;
   } catch (e) {
     console.log(e);
-    return res.status(401).send({ error: 'Unauthorized' });
+    return void res.status(401).send({ error: 'Unauthorized' });
   }
 
   const user = await prisma.user.findUnique({
@@ -25,7 +25,7 @@ const Auth = async (req: IRequestWithUser, res: Response, next: NextFunction) =>
   });
 
   if (!user) {
-    return res.status(403).send({ error: 'User not found' });
+    return void res.status(403).send({ error: 'User not found' });
   }
 
   req.user = user;
